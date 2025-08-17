@@ -53,4 +53,12 @@ public class GradesController {
         return GradesServices.updateGrade(gId,grade);
     }
 
+
+    @DeleteMapping("/{gId}")
+    public ResponseEntity<String> deleteGrade(@PathVariable Integer gId) {
+        GradesServices.Deletegrade(gId);
+        return ResponseEntity.ok("Grade with ID " + gId + " deleted successfully!");
+    }
+
+
 }

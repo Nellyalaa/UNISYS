@@ -38,9 +38,9 @@ public class GradesServices {
         return GradesRepo.save(Grades);
     }
     //delete
-   // public void Deletegrade(Integer Id){
-         //GradesRepo.deleteById(Id);
-  //  }
+   public void Deletegrade(Integer Id){
+         GradesRepo.deleteById(Id);
+   }
     //update
     public Grades updateGrade(Integer gId, Integer grade){
 

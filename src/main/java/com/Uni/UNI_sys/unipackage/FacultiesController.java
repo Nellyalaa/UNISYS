@@ -1,5 +1,6 @@
 package com.Uni.UNI_sys.unipackage;
 
+import com.Uni.UNI_sys.dto.FacultiesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class FacultiesController {
 
 
     @GetMapping
-    public List<Faculties> getAllFaculties(
+    public List<FacultiesDto> getAllFaculties(
 
         @RequestParam(required = false) String name
 
@@ -34,15 +35,15 @@ public class FacultiesController {
     }
 
     @PostMapping
-    public ResponseEntity<Faculties> addFac(@RequestBody Faculties Faculties){
-        Faculties newFac= FacultiesServices.addFaculty(Faculties);
+    public ResponseEntity<FacultiesDto> addFac(@RequestBody FacultiesDto FacultiesDto){
+        FacultiesDto newFac= FacultiesServices.addFaculty(FacultiesDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(newFac);
     }
 
     @DeleteMapping
-    public List<Faculties> deletefac(
+    public List<FacultiesDto> deletefacDto(
             @RequestParam (required = false) String name){
 
             if (name != null){
