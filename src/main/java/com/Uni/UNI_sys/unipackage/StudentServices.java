@@ -1,6 +1,7 @@
 package com.Uni.UNI_sys.unipackage;
 
 
+import com.Uni.UNI_sys.dto.StudentDto;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -14,22 +15,40 @@ public class StudentServices {
     public StudentServices(StudentRepo studentRepo) {
         StudentRepo = studentRepo;
     }
+    //toDTO
+    public StudentDto toDto(Student Student ){
+        return  new StudentDto(Student.getCid(),Student.getName(), Student.getEmail(), Student.getPhone_Number(), Student.getAcademic_Level(),Student.getFac());
+    }
+
+    //TOEntity
+    public Student toEntity( StudentDto StudentDto){
+        Student Student=new Student();
+        Student.setCid(StudentDto.getCid());
+        Student.setPhone_Number(StudentDto.getPhone_Number());
+        Student.setName(StudentDto.getName());
+        Student.setEmail(StudentDto.getEmail());
+        Student.setAcademic_Level(StudentDto.getAcademic_Level());
+        Student.setFac(StudentDto.getFac());;
+        return Student ;
+    }
 
 
-    public List<Student> getAllStudents(){
-        return StudentRepo.findAll();
+    public List<StudentDto> getAllStudents(){
+        return StudentRepo.findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
-    public List<Student> getStudentByName(String name){
-        return  StudentRepo.findAll().stream().filter(Student -> Student.getName().toLowerCase().contains(name.toLowerCase())).collect(Collectors.toList());
+    public List<StudentDto> getStudentByName(String name){
+        return  StudentRepo.findAll().stream().filter(Student -> Student.getName().toLowerCase().contains(name.toLowerCase())).map(this::toDto).collect(Collectors.toList());
     }
-    public List<Student> getStudentByAcl(String academic_Level){
-        return  StudentRepo.findAll().stream().filter(Student -> Student.getAcademic_Level().toLowerCase().contains(academic_Level.toLowerCase())).collect(Collectors.toList());
+    public List<StudentDto> getStudentByAcl(String academic_Level){
+        return  StudentRepo.findAll().stream().filter(Student -> Student.getAcademic_Level().toLowerCase().contains(academic_Level.toLowerCase())).map(this::toDto).collect(Collectors.toList());
     }
-    public List<Student> getStudentByfac(Faculties fac){
-        return StudentRepo.findAll().stream().filter(Student -> Student.getFac().equals(fac)).collect(Collectors.toList());
+    public List<StudentDto> getStudentByfac(Faculties fac){
+        return StudentRepo.findAll().stream().filter(Student -> Student.getFac().equals(fac)).map(this::toDto).collect(Collectors.toList());
     }
-    public Student addStudent(Student stu){
-        return StudentRepo.save(stu);
+    public StudentDto addStudent(StudentDto stu){
+        Student Student=toEntity(stu);
+        Student Studentsaved=StudentRepo.save(Student);
+        return toDto(Studentsaved);
     }
 
 
@@ -39,31 +58,35 @@ public class StudentServices {
     }
 
     @Transactional
-    public Student updateEmailById(Integer cid, String newEmail) {
+    public StudentDto updateEmailById(Integer cid, String newEmail) {
         return StudentRepo.findById(cid)  // instance method
                 .map(student -> {
                     student.setEmail(newEmail.trim());
-                    return StudentRepo.save(student);  // instance method
+                    Student updatedStudent = StudentRepo.save(student);
+                    return toDto(updatedStudent);
                 })
                 .orElseThrow(() -> new RuntimeException("Student with ID " + cid + " not found!"));
     }
 
     @Transactional
-    public Student updateaddressById(Integer cid, String address) {
+    public StudentDto updateaddressById(Integer cid, String address) {
         return StudentRepo.findById(cid)  // instance method
                 .map(student -> {
                     student.setAddress(address.trim());
-                    return StudentRepo.save(student);  // instance method
+                    Student updatedStudent = StudentRepo.save(student);
+                    return toDto(updatedStudent);
+
                 })
                 .orElseThrow(() -> new RuntimeException("Student with ID " + cid + " not found!"));
     }
 
     @Transactional
-    public Student updateByPhone(Integer cid, String phone) {
+    public StudentDto updateByPhone(Integer cid, String phone) {
         return StudentRepo.findById(cid)  // instance method
                 .map(student -> {
                     student.setPhone_Number(phone.trim());
-                    return StudentRepo.save(student);  // instance method
+                    Student updatedStudent = StudentRepo.save(student);
+                    return toDto(updatedStudent);
                 })
                 .orElseThrow(() -> new RuntimeException("Student with ID " + cid + " not found!"));
     }

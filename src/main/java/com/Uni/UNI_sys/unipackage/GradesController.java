@@ -1,6 +1,7 @@
 package com.Uni.UNI_sys.unipackage;
 
 
+import com.Uni.UNI_sys.dto.GradeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class GradesController {
     //methods
 //get
     @GetMapping
-    public List<Grades> getGrades(
+    public List<GradeDto> getGrades(
             @RequestParam(required = false) Integer grade,
             @RequestParam(required = false) Student stu,
             @RequestParam(required = false) courses cour)
@@ -38,8 +39,8 @@ public class GradesController {
         return GradesServices.getallGrades();
     }
     @PostMapping
-    public ResponseEntity<Grades> addgrade(@RequestBody Grades Grades) {
-        Grades newGrade = GradesServices.addGrade(Grades);
+    public ResponseEntity<GradeDto> addgrade(@RequestBody GradeDto GradeDto) {
+        GradeDto newGrade = GradesServices.addGrade(GradeDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(newGrade);
@@ -48,7 +49,7 @@ public class GradesController {
 
 
     @PutMapping("/grade/{gId}")
-    public Grades updateGrade(@PathVariable("gId") Integer gId,
+    public GradeDto updateGrade(@PathVariable("gId") Integer gId,
                               @RequestParam Integer grade){
         return GradesServices.updateGrade(gId,grade);
     }

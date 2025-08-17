@@ -10,6 +10,7 @@ public class Grades {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "gid")
     private  int gId;
 
     private int grade;

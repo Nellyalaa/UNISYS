@@ -1,5 +1,7 @@
 package com.Uni.UNI_sys.unipackage;
 
+import com.Uni.UNI_sys.dto.GradeDto;
+import com.Uni.UNI_sys.dto.coursesDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,38 +18,55 @@ public class GradesServices {
     }
 
     //methods
-    //get
-    public List<Grades> getallGrades(){
-        return GradesRepo.findAll();
+
+    //toDTO
+    public GradeDto toDto(Grades Grades ){
+        return new GradeDto(Grades.getGrade(),Grades.getCourses(),Grades.getStudent());
     }
-    public List<Grades> getGrade(Integer grade) {
+
+    //toEntity
+    public Grades toEntity(GradeDto dto) {
+        Grades Grades = new Grades();
+        Grades.setGrade(dto.getGrade());
+        Grades.setCourses(dto.getCourses());
+        Grades.setStudent(dto.getStudent());
+        return Grades;
+    }
+    //get
+    public List<GradeDto> getallGrades(){
+        return GradesRepo.findAll().stream().map(this::toDto).collect(Collectors.toList());
+    }
+    public List<GradeDto> getGrade(Integer grade) {
         return GradesRepo.findAll()
                 .stream()
                 .filter(g -> g.getGrade() == grade)
-                .collect(Collectors.toList());
+                .map(this::toDto).collect(Collectors.toList());
     }
 
-    public List<Grades> getGradesBystudentId(Student stu){
-        return GradesRepo.findAll().stream().filter(Grades -> Grades.getStudent().equals(stu)).collect(Collectors.toList());
+    public List<GradeDto> getGradesBystudentId(Student stu){
+        return GradesRepo.findAll().stream().filter(Grades -> Grades.getStudent().equals(stu)).map(this::toDto).collect(Collectors.toList());
     }
-    public List<Grades> getGradesByCourseId(courses cour){
-        return GradesRepo.findAll().stream().filter(Grades -> Grades.getCourses().equals(cour)).collect(Collectors.toList());
+    public List<GradeDto> getGradesByCourseId(courses cour){
+        return GradesRepo.findAll().stream().filter(Grades -> Grades.getCourses().equals(cour)).map(this::toDto).collect(Collectors.toList());
     }
     //add
-    public Grades addGrade( Grades Grades){
-        return GradesRepo.save(Grades);
+    public GradeDto addGrade( GradeDto GradeDto){
+        Grades grade =toEntity(GradeDto);
+        Grades saved = GradesRepo.save(grade);
+        return toDto(saved);
     }
     //delete
    public void Deletegrade(Integer Id){
          GradesRepo.deleteById(Id);
    }
     //update
-    public Grades updateGrade(Integer gId, Integer grade){
+    public GradeDto updateGrade(Integer gId, Integer grade){
 
         return GradesRepo.findById(gId)  // instance method
                 .map(Grades -> {
                     Grades.setGrade(grade);
-                    return GradesRepo.save(Grades);  // instance method
+                    Grades updatedGrade = GradesRepo.save(Grades);
+                    return toDto(updatedGrade);  // instance method
                 })
                 .orElseThrow(() -> new RuntimeException("Grade with ID " + gId + " not found!"));
     }

@@ -1,6 +1,7 @@
 package com.Uni.UNI_sys.unipackage;
 
 
+import com.Uni.UNI_sys.dto.StudentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class StudentController
     }
 
     @GetMapping
-    public List<Student> getStudents(
+    public List<StudentDto> getStudents(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String academic_Level,
             @RequestParam(required = false)Faculties fac
@@ -39,14 +40,14 @@ public class StudentController
 
     }
     @PostMapping
-    public ResponseEntity<Student> addFac(@RequestBody Student Student){
-        Student newStudent= StudentServices.addStudent(Student);
+    public ResponseEntity<StudentDto> addFac(@RequestBody StudentDto StudentDto){
+        StudentDto newStudent= StudentServices.addStudent(StudentDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(newStudent);
     }
     @DeleteMapping
-    public List<Student> deletestu( @RequestParam(required = false) String name){
+    public List<StudentDto> deletestu( @RequestParam(required = false) String name){
         if(name != null){
             StudentServices.deleteStudent(name);
             return StudentServices.getAllStudents();
@@ -54,19 +55,19 @@ public class StudentController
         return StudentServices.getAllStudents();
     }
     @PutMapping("/email/{cid}")
-    public Student updateEmail(@PathVariable("cid") Integer cid,
+    public StudentDto updateEmail(@PathVariable("cid") Integer cid,
                                @RequestParam String newEmail) {
         return StudentServices.updateEmailById(cid, newEmail);
     }
 
     @PutMapping("/address/{cid}")
-    public Student updateaddress(@PathVariable("cid") Integer cid,
+    public StudentDto updateaddress(@PathVariable("cid") Integer cid,
                                  @RequestParam String address) {
         return StudentServices.updateaddressById(cid, address);
     }
 
     @PutMapping("/Phone/{cid}")
-    public  Student updatebyphone( @PathVariable("cid") Integer cid, @RequestParam String phone){
+    public  StudentDto updatebyphone( @PathVariable("cid") Integer cid, @RequestParam String phone){
          return StudentServices.updateByPhone(cid,phone);
     }
 

@@ -1,6 +1,7 @@
 package com.Uni.UNI_sys.unipackage;
 
 
+import com.Uni.UNI_sys.dto.coursesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class coursesController {
     //methods
 
     @GetMapping
-    public List<courses> getCourses(
+    public List<coursesDto> getCourses(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String academic_Level,
             @RequestParam(required = false) Faculties fac
@@ -42,15 +43,15 @@ public class coursesController {
     }
 
     @PostMapping
-    public ResponseEntity<courses> addcour(@RequestBody courses courses) {
-        courses newcourses = coursesServices.addcourses(courses);
+    public ResponseEntity<coursesDto> addcour(@RequestBody coursesDto coursesDto) {
+        coursesDto newcourses = coursesServices.addcourses(coursesDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(newcourses);
     }
 
     @DeleteMapping
-    public List<courses> deleteCour(@RequestParam(required = false) String name){
+    public List<coursesDto> deleteCour(@RequestParam(required = false) String name){
         if(name != null){
             coursesServices.deleteStudent(name);
             return coursesServices.getallcourses();
@@ -59,13 +60,13 @@ public class coursesController {
     }
 
     @PutMapping("/name/{course_Id}")
-    public courses updatename(@PathVariable("course_Id") Integer course_Id,
+    public coursesDto updatename(@PathVariable("course_Id") Integer course_Id,
                               @RequestParam String name){
         return coursesServices.updatebyname(course_Id,name);
     }
 
     @PutMapping("/academic_Level/{course_Id}")
-    public courses updateAcl(@PathVariable("course_Id") Integer course_Id,
+    public coursesDto updateAcl(@PathVariable("course_Id") Integer course_Id,
                              @RequestParam String academic_Level ){
         return coursesServices.updateacdemiclevel(course_Id,academic_Level);
     }

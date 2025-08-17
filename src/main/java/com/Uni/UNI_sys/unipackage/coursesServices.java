@@ -1,6 +1,8 @@
 package com.Uni.UNI_sys.unipackage;
 
 
+import com.Uni.UNI_sys.dto.FacultiesDto;
+import com.Uni.UNI_sys.dto.coursesDto;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +21,36 @@ public class coursesServices {
 
     //methods
 
-    public List<courses> getallcourses(){
-        return coursesRepo.findAll();
+    //toDTO
+    public coursesDto toDto(courses courses ){
+        return new coursesDto(courses.getAcademic_Level(),courses.getName(),courses.getFac());
     }
-    public List<courses> getcoursesByName(String name){
-        return  coursesRepo.findAll().stream().filter(courses -> courses.getName().toLowerCase().contains(name.toLowerCase())).collect(Collectors.toList());
+
+    //toEntity
+    public courses toEntity(coursesDto dto) {
+        courses cour = new courses();
+        cour.setFac(dto.getFac());
+        cour.setName(dto.getName());
+        cour.setAcademic_Level(dto.getAcademic_Level());
+        return cour;
     }
-    public List<courses> getcoursesByAcl(String academic_Level){
-        return  coursesRepo.findAll().stream().filter(courses -> courses.getAcademic_Level().toLowerCase().contains(academic_Level.toLowerCase())).collect(Collectors.toList());
+
+    public List<coursesDto> getallcourses(){
+        return coursesRepo.findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
-    public List<courses> getcoursesByfac(Faculties fac){
-        return coursesRepo.findAll().stream().filter(courses -> courses.getFac().equals(fac)).collect(Collectors.toList());
+    public List<coursesDto> getcoursesByName(String name){
+        return  coursesRepo.findAll().stream().filter(courses -> courses.getName().toLowerCase().contains(name.toLowerCase())).map(this::toDto).collect(Collectors.toList());
     }
-    public courses addcourses(courses courses){
-        return coursesRepo.save(courses);
+    public List<coursesDto> getcoursesByAcl(String academic_Level){
+        return  coursesRepo.findAll().stream().filter(courses -> courses.getAcademic_Level().toLowerCase().contains(academic_Level.toLowerCase())).map(this::toDto).collect(Collectors.toList());
+    }
+    public List<coursesDto> getcoursesByfac(Faculties fac){
+        return coursesRepo.findAll().stream().filter(courses -> courses.getFac().equals(fac)).map(this::toDto).collect(Collectors.toList());
+    }
+    public coursesDto addcourses(coursesDto coursesDto){
+        courses cour =toEntity(coursesDto);
+        courses saved = coursesRepo.save(cour);
+        return toDto(saved);
     }
 
 
@@ -43,21 +61,24 @@ public class coursesServices {
     }
 
     @Transactional
-    public courses updatebyname(Integer course_Id, String name) {
+    public coursesDto updatebyname(Integer course_Id, String name) {
         return coursesRepo.findById(course_Id)  // instance method
                 .map(courses -> {
                     courses.setName(name.trim());
-                    return coursesRepo.save(courses);  // instance method
+                    courses updatedCourse = coursesRepo.save(courses);
+                    return toDto(updatedCourse);
+
                 })
                 .orElseThrow(() -> new RuntimeException("course with ID " + course_Id + " not found!"));
     }
 
     @Transactional
-    public courses updateacdemiclevel(Integer course_Id, String academic_Level) {
+    public coursesDto updateacdemiclevel(Integer course_Id, String academic_Level) {
         return coursesRepo.findById(course_Id)  // instance method
                 .map(courses -> {
                     courses.setAcademic_Level(academic_Level.trim());
-                    return coursesRepo.save(courses);  // instance method
+                   courses updatedCourse = coursesRepo.save(courses);
+                    return toDto(updatedCourse);
                 })
                 .orElseThrow(() -> new RuntimeException("Course with ID " + course_Id + " not found!"));
     }
