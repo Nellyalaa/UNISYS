@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/Stu")
+@CrossOrigin(origins = "http://localhost:4210")
 public class StudentController
 {
     //field
@@ -46,30 +47,30 @@ public class StudentController
                 .status(HttpStatus.CREATED)
                 .body(newStudent);
     }
-    @DeleteMapping
-    public List<StudentDto> deletestu( @RequestParam(required = false) String name){
-        if(name != null){
-            StudentServices.deleteStudent(name);
-            return StudentServices.getAllStudents();
-        }
-        return StudentServices.getAllStudents();
-    }
-    @PutMapping("/email/{cid}")
-    public StudentDto updateEmail(@PathVariable("cid") Integer cid,
-                               @RequestParam String newEmail) {
-        return StudentServices.updateEmailById(cid, newEmail);
-    }
-
-    @PutMapping("/address/{cid}")
-    public StudentDto updateaddress(@PathVariable("cid") Integer cid,
-                                 @RequestParam String address) {
-        return StudentServices.updateaddressById(cid, address);
+    //@DeleteMapping
+  //  public List<StudentDto> deletestu( @RequestParam(required = false) String name){
+      //  if(name != null){
+          //  StudentServices.deleteStudent(name);
+           // return StudentServices.getAllStudents();
+       // }
+     //  return StudentServices.getAllStudents();
+   // }
+    @PutMapping("/{cid}")
+    public ResponseEntity<StudentDto> updateStudent(
+            @PathVariable("cid") Integer cid,
+            @RequestBody StudentDto updatedStudent
+    ) {
+        StudentDto saved = StudentServices.updateStudent(cid, updatedStudent);
+        return ResponseEntity.ok(saved);
     }
 
-    @PutMapping("/Phone/{cid}")
-    public  StudentDto updatebyphone( @PathVariable("cid") Integer cid, @RequestParam String phone){
-         return StudentServices.updateByPhone(cid,phone);
+    @DeleteMapping("/{cid}")
+    public void deleteStudentById(@PathVariable Integer cid) {
+        StudentServices.deleteStudentById(cid);
     }
+
+
+
 
 
 }

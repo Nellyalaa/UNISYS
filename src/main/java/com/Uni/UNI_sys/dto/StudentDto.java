@@ -9,19 +9,23 @@ public class StudentDto {
     private String name;
     private String email;
     private String Phone_Number;
+    private String address;
     private String academic_Level;
     private Faculties fac;
+
+
 
     //constructors
 
     public StudentDto() {
     }
 
-    public StudentDto(int cid, String name, String email, String phone_Number, String academic_Level, Faculties fac) {
+    public StudentDto(int cid, String name, String email, String phone_Number, String address, String academic_Level, Faculties fac) {
         this.cid = cid;
         this.name = name;
         this.email = email;
         Phone_Number = phone_Number;
+        this.address = address;
         this.academic_Level = academic_Level;
         this.fac = fac;
     }
@@ -73,5 +77,13 @@ public class StudentDto {
 
     public void setAcademic_Level(String academic_Level) {
         this.academic_Level = academic_Level;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -17,7 +17,7 @@ public class StudentServices {
     }
     //toDTO
     public StudentDto toDto(Student Student ){
-        return  new StudentDto(Student.getCid(),Student.getName(), Student.getEmail(), Student.getPhone_Number(), Student.getAcademic_Level(),Student.getFac());
+        return  new StudentDto(Student.getCid(),Student.getName(), Student.getEmail(), Student.getPhone_Number(),Student.getAddress(), Student.getAcademic_Level(),Student.getFac());
     }
 
     //TOEntity
@@ -29,6 +29,7 @@ public class StudentServices {
         Student.setEmail(StudentDto.getEmail());
         Student.setAcademic_Level(StudentDto.getAcademic_Level());
         Student.setFac(StudentDto.getFac());;
+        Student.setAddress(StudentDto.getAddress());
         return Student ;
     }
 
@@ -52,43 +53,31 @@ public class StudentServices {
     }
 
 
+    // @Transactional
+  //  public void deleteStudent( String stu){
+    //    StudentRepo.deleteByName(stu);
+    //}
+
     @Transactional
-    public void deleteStudent( String stu){
-        StudentRepo.deleteByName(stu);
+    public StudentDto updateStudent(Integer cid, StudentDto updatedStudent) {
+        Student student = StudentRepo.findById(cid)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        student.setName(updatedStudent.getName());
+        student.setEmail(updatedStudent.getEmail());
+        student.setAddress(updatedStudent.getAddress());
+        student.setPhone_Number(updatedStudent.getPhone_Number());
+        student.setAcademic_Level(updatedStudent.getAcademic_Level());
+        student.setFac(updatedStudent.getFac());
+
+        StudentRepo.save(student);
+
+        return toDto(student); // use your mapping method
     }
 
     @Transactional
-    public StudentDto updateEmailById(Integer cid, String newEmail) {
-        return StudentRepo.findById(cid)  // instance method
-                .map(student -> {
-                    student.setEmail(newEmail.trim());
-                    Student updatedStudent = StudentRepo.save(student);
-                    return toDto(updatedStudent);
-                })
-                .orElseThrow(() -> new RuntimeException("Student with ID " + cid + " not found!"));
-    }
-
-    @Transactional
-    public StudentDto updateaddressById(Integer cid, String address) {
-        return StudentRepo.findById(cid)  // instance method
-                .map(student -> {
-                    student.setAddress(address.trim());
-                    Student updatedStudent = StudentRepo.save(student);
-                    return toDto(updatedStudent);
-
-                })
-                .orElseThrow(() -> new RuntimeException("Student with ID " + cid + " not found!"));
-    }
-
-    @Transactional
-    public StudentDto updateByPhone(Integer cid, String phone) {
-        return StudentRepo.findById(cid)  // instance method
-                .map(student -> {
-                    student.setPhone_Number(phone.trim());
-                    Student updatedStudent = StudentRepo.save(student);
-                    return toDto(updatedStudent);
-                })
-                .orElseThrow(() -> new RuntimeException("Student with ID " + cid + " not found!"));
+    public void deleteStudentById(Integer cid){
+        StudentRepo.deleteById(cid);
     }
 
 }
